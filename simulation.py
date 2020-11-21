@@ -1,9 +1,9 @@
 import numpy as np
 from numpy import cos, sin, arctan
-from scipy.constants.constants import e, pi, epsilon_0, m_e
+from scipy.constants.constants import e, pi, epsilon_0, m_e, c
 import matplotlib.pyplot as plt
-dt = 0.002
-n = 100000
+dt = 1e-21
+n = 2000000
 
 li_r = []
 
@@ -17,17 +17,32 @@ r_e = r/r_l
 v = v_l0*np.array([-1, 0.])
 a = a_l0*(-r_e)
 
+
 for i in range(n):
-    r += v*dt
-    if i % 200 == 0:
+    # plotting & tracking
+    if i % (n/100) == 0:
         plt.plot(r[0],r[1], marker="x")
+        li_r.append([r[0],r[1]])
+
+    # calculations newton
+    r += v*dt
     v += a*dt
+    v_l = np.linalg.norm(v)
     r_l = np.linalg.norm(r)
     r_e = r / r_l
+    v_e = v / v_l
     a_l = e ** 2 / (4 * pi * epsilon_0 * r_l ** 2 * m_e) # Beschleunigung aufgrund der Coulombkraft
-    a = a_l*(-r_e) / r_l ** 2
+    a = a_l*(-r_e)
+
+    # calculation radiation
+    en_0 = 1/2*m_e*v_l**2
+    p = e**2/6/pi/epsilon_0/c**3*abs(a_l)**2
+    en_delta = p*dt
+    en_new = en_0-en_delta
+    v_l = (2*en_new/m_e)**(1/2)
+    v = v_e * v_l
+
 
 # print(li_r)
 plt.axes().set_aspect('equal', 'datalim')
 plt.show()
-# nicer hashtag
