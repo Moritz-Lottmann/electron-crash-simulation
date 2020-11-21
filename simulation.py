@@ -30,3 +30,4 @@ for i in range(n):
 # print(li_r)
 plt.axes().set_aspect('equal', 'datalim')
 plt.show()
+# nicer hashtag
