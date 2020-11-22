@@ -2,23 +2,25 @@ import numpy as np
 from numpy import cos, sin, arctan
 from scipy.constants.constants import e, pi, epsilon_0, m_e, c
 import matplotlib.pyplot as plt
-n = int(3e6)
-
+k = 1
 r_l = 1e-10#0.52917721e-10
-a_l = e ** 2 / (4 * pi * epsilon_0 * r_l ** 2 * m_e) # Beschleunigung aufgrund der Coulombkraft
-v_l = (a_l*r_l)**(1/2)
+a_0 = e ** 2 / (4 * pi * epsilon_0 * r_l ** 2 * m_e) # Beschleunigung aufgrund der Coulombkraft
+v_l = (a_0*r_l)**(1/2)
 
 li_r = []
 
 elapsed_time = 0
-for i in range(n):
+finished = False
+n = 0
+while not finished:
     # plotting & tracking
-    if i % (n/10) == 0:
-        print(round((i/n)*100, 2), '%')
+    if n % 100000 == 0:
+        print(int(n/1000), "k Rechnungen")
+    n += 1
 
     if r_l > 1e-15:
         # calculate T
-        T = 2 * pi * r_l / v_l
+        T = 2 * pi * r_l / v_l / k
         elapsed_time += T
 
         # calculation radiation
@@ -30,17 +32,19 @@ for i in range(n):
 
         v_l = (2*en_new/m_e)**(1/2)
         r_l = v_l**2/a_l
-        if i % (n/200) == 0:
+        if n % 10000 == 0:
             li_r.append([r_l, elapsed_time])
+    else:
+        finished = True
 
-#plt.plot(li_np[0], li_np[1])
 li_r_np = np.array(li_r)
 li_r_np = np.transpose(li_r_np)
 li_dr = []
 for i in range(len(li_r_np[0])-1):
     li_dr.append((li_r_np[0][i]-li_r_np[0][i+1])/li_r_np[0][i]*100)
 li_dr_np = np.array(li_dr)
-plt.plot(li_r_np[0])#, li_r_np[0], marker="x")
-print(elapsed_time)
+plt.plot(li_r_np[0], marker="x")#, li_r_np[0], marker="x")
+print("Total n/k:", n/k)
+print("Elapsed time: ", elapsed_time)
 #plt.axes().set_aspect('equal', 'datalim')
 plt.show()
