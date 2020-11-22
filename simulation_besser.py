@@ -2,9 +2,9 @@ import numpy as np
 from numpy import cos, sin, arctan
 from scipy.constants.constants import e, pi, epsilon_0, m_e, c
 import matplotlib.pyplot as plt
-n = int(6e5)
+n = int(3e6)
 
-r_l = 0.52917721e-10
+r_l = 1e-10#0.52917721e-10
 a_l = e ** 2 / (4 * pi * epsilon_0 * r_l ** 2 * m_e) # Beschleunigung aufgrund der Coulombkraft
 v_l = (a_l*r_l)**(1/2)
 
@@ -14,9 +14,9 @@ elapsed_time = 0
 for i in range(n):
     # plotting & tracking
     if i % (n/10) == 0:
-        pass#print(round((i/n)*100, 2), '%')
+        print(round((i/n)*100, 2), '%')
 
-    if r_l>1e-12:
+    if r_l > 1e-15:
         # calculate T
         T = 2 * pi * r_l / v_l
         elapsed_time += T
@@ -40,7 +40,7 @@ li_dr = []
 for i in range(len(li_r_np[0])-1):
     li_dr.append((li_r_np[0][i]-li_r_np[0][i+1])/li_r_np[0][i]*100)
 li_dr_np = np.array(li_dr)
-plt.plot(li_r_np[1], li_r_np[0], marker="x")
+plt.plot(li_r_np[0])#, li_r_np[0], marker="x")
 print(elapsed_time)
 #plt.axes().set_aspect('equal', 'datalim')
 plt.show()
